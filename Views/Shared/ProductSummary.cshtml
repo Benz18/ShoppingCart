@@ -1,0 +1,20 @@
+﻿@model CA_Project.Models.Product
+@{
+    var sessionID = ViewData["sessionId"];
+
+    int Quantity = (int)ViewData["quantity"]; 
+    string kw = (string)ViewData["keyword"];
+}
+<div class="list-item">
+    <span><img src="@Model.ImagePath" style="width: 100px;height: 100px;" /></span>
+    <span class="p-name">@Model.ProductName</span>
+    <span class="p-description">@Model.Description</span>
+    <div class="add-to-cart">
+        @using (Html.BeginForm("AddToCart", "ShoppingCart", new { sessionId = @sessionID, keyword = @kw, quantity = @Quantity }))
+        {
+            @Html.HiddenFor(x => x.ProductID)
+            @Html.Hidden("returnUrl", Request.Url.PathAndQuery)
+            <input type="submit" class="btn btn-success" value="$@Model.UnitPrice   Add to cart" />
+        }
+    </div>
+</div>

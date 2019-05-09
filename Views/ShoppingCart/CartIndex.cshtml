@@ -1,0 +1,108 @@
+﻿@model CA_Project.Models.CartVM
+@{
+    var sessionID = ViewData["sessionId"];
+    int Quantity = (int)ViewData["quantity"]; 
+}
+
+<br />
+<table id="table1">
+    <tr>
+        <th>View Cart</th>
+        <th>
+            @Html.ActionLink("Continue Shopping", "Index", "Product",
+        new { sessionId = @sessionID, quantity = @Quantity }, null) 
+    </th>
+    <th>
+        @Html.ActionLink("Checkout", "Checkout", "ShoppingCart",
+    new { sessionId = @sessionID }, null)
+    </th>
+</tr>
+
+</table>
+<br>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="text-right" style="font-size: 30px;color: black; font-weight: bold;">
+           <span>TOTAL：</span> @Model.Cart.ComputeTotalPrice().ToString("c")
+        </div>
+
+    </div>
+</div>
+<br />
+<div>
+@foreach (var item in Model.Cart.details)
+{
+    <div class="col-md-4 column productbox">
+
+        <img src="@item.Product.ImagePath" style="width: 460px; height: 230px;" class="img-responsive">
+        <div class="producttitle">
+            <div class="productname">@item.Product.ProductName</div>
+            <div class="productdes">@item.Product.Description</div>
+            <div>
+                <table>
+                    <tr>
+                        <td style="width:50px;">Price：</td>
+                        <td>@item.Product.UnitPrice</td>
+                    </tr>
+                    <tr>
+                        <td>Quantity:</td>
+                        <td>
+                            <form id="quantityeditform+@item.Product.ProductID" action="@Url.Action("IncreaseOrDecreaseOne", "ShoppingCart")" method="post">
+                                @Html.Hidden("ProductID", item.Product.ProductID)
+                                <input type="button" id="minusbtn+@item.Product.ProductID" onclick="minus('@item.Product.ProductID')" value="-" data="@item.Product.ProductID">
+                                <input style="width:50px;height:26px" type="text" name="quantity" value="@item.Quantity" id="goodscount+@item.Product.ProductID">
+                                <input type="button" id="plusbtn+@item.Product.ProductID" onclick="plus('@item.Product.ProductID')" value="+" data="@item.Product.ProductID">
+                                @Html.Hidden("sessionId", @sessionID)
+                            </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>TOTAL：</td>
+                        <td>@((item.Quantity * item.Product.UnitPrice).ToString("c"))</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="productprice">
+            <div class="text-center">
+                @using (Html.BeginForm("RemoveFromCart", "ShoppingCart", new { sessionId = @sessionID }))
+                {
+                    @Html.Hidden("ProductID", item.Product.ProductID)
+                    @Html.HiddenFor(x => x.ReturnUrl)
+                    <input class="btn btn-default btn-sm" type="submit" value="Remove" />
+                }
+                <br />
+            </div>
+        </div>
+    </div>
+
+}
+
+</div>
+<script type="text/javascript">
+
+    function plus(pid) {
+        var i = document.getElementById("goodscount+" + pid).value;
+        i++;
+        document.getElementById("goodscount+" + pid).value = i;
+        document.getElementById("quantityeditform+" + pid).submit();
+    }
+    function minus(pid) {
+        var i = document.getElementById("goodscount+" + pid).value;
+        if (i > 1) {
+            i--;
+            document.getElementById("goodscount+" + pid).value = i;
+        } else {
+            document.getElementById("goodscount+" + pid).value = 1;
+        }
+        document.getElementById("quantityeditform+" + pid).submit();
+    }
+</script>
+
+<style>
+    #table1 {
+        width: 50%;
+        font-size: 18px;
+    }
+</style>

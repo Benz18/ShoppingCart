@@ -1,0 +1,72 @@
+﻿@using ViewClasses.Models
+@{
+    ViewBag.Title = "Product";
+}
+@{
+    var sessionID = ViewData["sessionID"];
+    var user = ViewData["user"];
+}
+<p></p>
+
+<table>
+    @using (Html.BeginForm("Index", "Product", FormMethod.Post))
+    {
+        <table align="center">
+            <tr>
+                <th>Hello,@User.FirstName+" "+ @User.LastName</th>
+                <th>@Html.ActionLink(@</th>
+            </tr>
+            <tr>
+                <th>Practice:</th>
+                <td>@lecturer.PracticeName</td>
+            </tr>
+        </table>
+
+        <div style="line-height:10px">&nbsp;</div>
+
+        <table align="center" border="1">
+            <tr>
+                <th>Courses</th>
+                <th>Start</th>
+                <th>End</th>
+            </tr>
+
+            @foreach (var _class in classes)
+            {
+                var start = Timestamp.dateFromTimestamp(_class.StartDate);
+                var end = Timestamp.dateFromTimestamp(_class.EndDate);
+
+                <tr>
+                    <td>
+                        @Html.ActionLink(@_class.CourseName, "CourseDetails", "Course",
+                   new { courseId = @_class.CourseId, sessionId = @sessionId }, null )
+                </td>
+                <td>@start</td>
+                <td>@end</td>
+            </tr>
+        }
+        </table>
+    }
+
+
+
+
+
+
+
+
+    @{
+        List<ProductModel> list =
+            (List<ProductModel>)ViewData["products"];
+
+        foreach (var item in list)
+        {
+            <tr>
+                <td>@item.ProductName</td>
+                <td>@item.Description</td>
+                <td>@item.UnitPrice</td>
+            </tr>
+        }
+    }
+</table>
+

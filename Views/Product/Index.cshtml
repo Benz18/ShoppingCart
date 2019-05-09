@@ -1,0 +1,57 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+@using CA_Project.Models
+@{
+    var sessionID = ViewData["sessionId"];
+    var user = (User)ViewData["user"];
+    var products = (List<Product>)ViewData["product"];
+    string kw = (string)ViewData["keyword"];
+    int Quantity = (int)ViewData["quantity"]; 
+}
+<p></p>
+<table width="1140">
+    <tr class="nav-product">
+        <th width="300">Hello, @user.LastName @user.FirstName!</th>
+        <td width="200">
+            <u>
+                @Html.ActionLink("My Purchases", "Index", "My_Purchases",
+            new { sessionId = @sessionID , quantity = @Quantity}, null)
+            </u>
+        </td>
+        <td width="580">
+            <u>
+                @Html.ActionLink("Logout", "Index", "Logout",
+            new { sessionId = @sessionID }, null)
+            </u>
+        </td>
+        <td width="20">@Html.ActionLink(" ", "CartIndex", "ShoppingCart", new { sessionId = @sessionID }, new { @class = "ImageLink" })</td>
+        <td>: @Quantity</td>
+    </tr>
+</table>
+<br>
+<br>
+@using (Html.BeginForm("Index", "Product", new { sessionId = @sessionID, keyword = @kw, quantity = @Quantity }, FormMethod.Post))
+{
+    <div class="searchbar">
+        @Html.TextBox("keyword", kw, new { style = "width:1060px" })
+        <input type="submit" value="Search" />
+    </div>
+}
+<br>
+<br>
+<div class="list-view">
+    @foreach (var _product in products)
+    {
+        Html.RenderPartial("ProductSummary", _product);
+    }
+</div>
+<style type="text/css">
+
+    .ImageLink {
+        background: url('../../Image/Cart.jpeg') no-repeat;
+        display: block;
+        height: 32px;
+        width: 28px;
+    }
+</style>

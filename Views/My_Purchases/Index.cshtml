@@ -1,0 +1,114 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+@using CA_Project.Models
+
+@{
+    var sessionID = ViewData["sessionId"];
+    var user = (User)ViewData["user"];
+    var tran_Details = (List<Tran_Details>)ViewData["tran_Details"];
+    int quantity = (int)ViewData["quantity"];
+}
+<p></p>
+
+<table id="table1">
+    <tr>
+        <th>My Purchases</th>
+        
+        <th>
+            @Html.ActionLink("Home", "Index", "Product",
+        new { sessionId = @sessionID, quantity = quantity }, null)
+        </th>
+        <th>
+            @Html.ActionLink("Logout", "Index", "Logout",
+        new { sessionId = @sessionID }, null)
+        </th>
+    </tr>
+    </table>
+<div class="list-view">
+    @foreach (var _tran_Detail in tran_Details)
+    {
+        var p_name = _tran_Detail.ProductName;
+        var p_des = _tran_Detail.Description;
+        var transdate = _tran_Detail.TransactionDate;
+        var num = _tran_Detail.Quantity;
+        string path = "../Image/" + _tran_Detail.ProductID + ".JPG";
+        List<string> codes = _tran_Detail.Activation_Codes;
+        <div class="producttitle">
+            <div>
+                <table id="table"  align="center">
+
+                    <tr>
+                    <tr>
+                        <td rowspan="4">
+                            <img src="@path" style="width: 200px;height: 200px;" class="img-responsive">
+                            
+                        </td>
+
+                    </tr>
+
+                    <tr><td>Purchased on: @transdate</td></tr>
+                    <tr>
+                        <td>  Quantity: @num</td>
+                    </tr>
+                    <tr>
+                        <td> Activation Code:
+                            @{
+                                SelectListItem item;
+                                List<SelectListItem> list = new List<SelectListItem>();
+                                int i = 1;
+                                if (codes.Count == 1)
+                                {
+                                    
+                                    @codes[0];
+                                }
+                                else
+                                {
+                                    foreach (string code in codes)
+                                    {
+                                        item = new SelectListItem();
+                                        item.Text = code;
+                                        item.Value = "Value" + i;
+                                        item.Selected = (i == 1);
+                                        list.Add(item);
+                                        i++;
+                                    }
+
+                            @Html.DropDownList("Id", list)
+                                    }
+                                }</td>
+                    <tr>
+                        <td  colspan="2">@p_name</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">@p_des</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><button type="button">Download</button></td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+    }
+
+</div>
+
+<style>
+  .table,tr,td{
+      padding-bottom:10px;
+      padding-top:10px;
+      padding-left:10px;
+      margin:auto;
+      
+  }
+    #table1 {
+        
+        width:50%;
+        font-size:18px;
+    }
+
+</style>
